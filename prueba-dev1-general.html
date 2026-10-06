@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prueba técnica · Desarrollador 1 · Satrack</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --navy-950:#04201E;
+    --navy-900:#0A2E2B;
+    --navy-800:#123F3B;
+    --teal-500:#14C7B4;
+    --teal-300:#7EE8DA;
+    --red:#E2645A;
+    --paper:#EAF6F3;
+    --paper-dim:#9FC3BC;
+    --ink-dim:#7FA39C;
+    --radius:4px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--navy-950);color:var(--paper);font-family:'Inter',sans-serif;font-size:15px;line-height:1.6}
+  ::selection{background:var(--teal-500);color:var(--navy-950)}
+  h1,h2,.serif{font-family:'Fraunces',serif}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  textarea,input{font-family:inherit}
+
+  .page{max-width:760px;margin:0 auto;padding:40px 24px 110px}
+
+  .brand-row{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+  .brand-mark{width:26px;height:26px;border-radius:50%;background:conic-gradient(var(--teal-500),var(--teal-300),var(--teal-500));flex-shrink:0}
+  .brand-word{font-size:15px;font-weight:700;letter-spacing:.02em}
+  .brand-word span{color:var(--teal-500)}
+
+  h1{font-size:30px;font-weight:600;margin-bottom:10px;line-height:1.25}
+  .subtitle{color:var(--ink-dim);font-size:14px;max-width:60ch;margin-bottom:10px}
+  .subtitle.instructions{margin-bottom:28px}
+
+  .meta{display:grid;grid-template-columns:1fr 1fr;gap:14px;background:var(--navy-900);border:1px solid var(--navy-800);border-radius:var(--radius);padding:22px;margin-bottom:24px}
+  .meta div{display:flex;flex-direction:column;gap:6px}
+  .meta .full{grid-column:1/-1}
+  .meta label{font-size:12px;color:var(--ink-dim)}
+  .meta input{background:var(--navy-950);border:1px solid var(--navy-800);border-radius:var(--radius);padding:9px 11px;color:var(--paper);font-size:14px}
+  .meta input:focus{outline:none;border-color:var(--teal-500)}
+  .meta input[readonly]{color:var(--ink-dim)}
+
+  #btn-start{background:var(--teal-500);color:var(--navy-950);padding:14px 26px;border-radius:var(--radius);font-size:14px;font-weight:700;width:100%}
+  #btn-start:hover{background:var(--teal-300)}
+  #start-error{display:block;color:var(--red);font-size:12px;margin-top:10px;min-height:16px}
+
+  .timer-bar{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;background:rgba(4,32,30,0.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--navy-800);padding:12px 24px;margin:0 -24px 28px}
+  #timer-candidato{font-size:13px;color:var(--ink-dim)}
+  #timer-clock{font-family:'Fraunces',serif;font-size:22px;color:var(--teal-500);font-variant-numeric:tabular-nums}
+  #timer-clock.low{color:var(--red)}
+
+  .block{margin-bottom:44px}
+  .block-eyebrow{font-size:12px;color:var(--teal-500);margin-bottom:6px}
+  .block-title{font-size:22px;font-weight:600;margin-bottom:8px;font-family:'Fraunces',serif}
+  .block-note{color:var(--ink-dim);font-size:13px;margin-bottom:22px;max-width:62ch}
+
+  .question{margin-bottom:26px}
+  .q-label{font-size:12px;color:var(--paper-dim);margin-bottom:8px;display:flex;justify-content:space-between}
+  .q-text{font-size:15px;margin-bottom:12px;line-height:1.65}
+  .q-title{font-weight:600;margin-bottom:6px}
+
+  pre.code-block{background:#02120F;border:1px solid var(--navy-800);border-radius:var(--radius);padding:16px 18px;overflow-x:auto;font-size:13px;line-height:1.55;color:#B9F3E8;margin-bottom:14px;font-family:'SF Mono',Consolas,monospace;white-space:pre}
+  table.data-table{width:100%;border-collapse:collapse;margin-bottom:14px;font-size:13px}
+  table.data-table th, table.data-table td{border:1px solid var(--navy-800);padding:7px 10px;text-align:left}
+  table.data-table th{background:var(--navy-900);color:var(--teal-300);font-weight:600}
+
+  textarea.answer{width:100%;background:var(--navy-900);border:1px solid var(--navy-800);border-radius:var(--radius);padding:14px 16px;color:var(--paper);font-size:14px;line-height:1.6;resize:vertical;min-height:120px}
+  textarea.answer:focus{outline:none;border-color:var(--teal-500)}
+  textarea.answer::placeholder{color:#4C6B65}
+
+  .save-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(4,32,30,0.95);backdrop-filter:blur(6px);border-top:1px solid var(--navy-800);padding:14px 24px;display:none;justify-content:center;align-items:center;gap:16px;z-index:20}
+  #btn-save{background:var(--teal-500);color:var(--navy-950);padding:12px 24px;border-radius:var(--radius);font-size:14px;font-weight:700}
+  #btn-save:hover{background:var(--teal-300)}
+  #save-status{font-size:12px;color:var(--ink-dim);max-width:46ch}
+
+  #test-screen{display:none}
+
+  @media (max-width:600px){
+    .meta{grid-template-columns:1fr}
+    .page{padding:24px 16px 110px}
+    .timer-bar{margin:0 -16px 24px;padding:10px 16px}
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ============ PANTALLA DE INICIO ============ -->
+  <div id="start-screen">
+    <div class="brand-row"><div class="brand-mark"></div><div class="brand-word">sat<span>rack</span></div></div>
+    <h1>Prueba técnica — Desarrollador 1</h1>
+    <p class="subtitle">Evaluación de análisis, optimización, estructuras de datos, depuración y arquitectura aplicados a casos reales de telemetría y flotas.</p>
+    <p class="subtitle instructions">Duración: 60 minutos. 6 bloques, 100 puntos. No necesitas conocimiento previo de GPS o flotas: todo el contexto está en cada enunciado. En cada pregunta escribe tu razonamiento antes de la respuesta final; importa más <em>cómo</em> llegaste a ella que si es exacta. Cada persona recibe un conjunto distinto de preguntas. Al terminar, presiona <b>Guardar respuestas</b> una sola vez.</p>
+
+    <div class="meta">
+      <div class="full"><label for="meta-candidato">Nombre completo</label><input id="meta-candidato" type="text" placeholder="Escribe tu nombre completo" autocomplete="off"></div>
+      <div class="full"><label for="meta-fecha">Fecha</label><input id="meta-fecha" type="date" readonly></div>
+    </div>
+
+    <button id="btn-start" type="button">Iniciar prueba</button>
+    <span id="start-error"></span>
+  </div>
+
+  <!-- ============ PRUEBA ============ -->
+  <div id="test-screen">
+    <div class="timer-bar">
+      <span id="timer-candidato"></span>
+      <span id="timer-clock">60:00</span>
+    </div>
+    <div id="exam-root"></div>
+  </div>
+
+  <div class="save-bar" id="save-bar">
+    <button id="btn-save" type="button">Guardar respuestas</button>
+    <span id="save-status"></span>
+  </div>
+
+</div>
+
+<script>
+/* =====================================================================
+   CONFIGURACIÓN
+   ===================================================================== */
+const SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-d7obLHgGZj46JMPLJL6E-ZL-QSwl0eZ6KDbtJtVugE3UN5IBQLnCF7l8xlNntpfo/exec";
+const DURACION_SEGUNDOS = 60 * 60;
+
+/* =====================================================================
+   BANCO DE PREGUNTAS
+   Cada bloque tiene varias variantes de dificultad equivalente. A cada
+   persona se le asigna una variante distinta según su nombre y la fecha.
+   ===================================================================== */
+
+/* ---------- Bloque 1 · Estimación (15 pts) ---------- */
+const B1 = [
+  { id:'E1', nota:'Satrack tiene ~55.000 vehículos activos entre Colombia, Ecuador, Panamá y Centroamérica.',
+    preguntas:[{ pts:15, text:`Cada vehículo reporta una posición GPS cada 5 segundos mientras está en movimiento, una alarma en promedio cada 40 minutos y un evento de geocerca en promedio cada 15 minutos (ambos durante el movimiento). Asume que cada vehículo está en movimiento 8 horas al día. <b>a)</b> Estima cuántos registros totales (posiciones + alarmas + geocercas) genera la flota completa en un día. <b>b)</b> Estima cuánto espacio ocuparía un año de esos datos si cada registro pesa 180 bytes y aplicas una compresión que reduce el volumen a la tercera parte. <b>c)</b> Indica qué simplificaciones asumiste. Muestra el razonamiento paso a paso.` }] },
+  { id:'E2', nota:'La app móvil de conductores tiene ~30.000 conductores activos por día.',
+    preguntas:[{ pts:15, text:`Durante su turno de 8 horas, la app envía un "latido" al servidor cada 30 segundos y cada latido pesa ~600 bytes. El 60% de los conductores está conectado al mismo tiempo durante el pico de la madrugada. <b>a)</b> ¿Cuántas peticiones por día recibe el servidor? <b>b)</b> Estima las peticiones por segundo en el pico y el ancho de banda entrante en ese momento. <b>c)</b> Indica qué simplificaciones asumiste. Muestra el razonamiento paso a paso.` }] },
+  { id:'E3', nota:'Satrack tiene ~12.000 clientes con acceso al módulo de reportes.',
+    preguntas:[{ pts:15, text:`En promedio, cada cliente genera 3 reportes por día laboral, y cada reporte consulta 30 días de posiciones de 20 vehículos. Cada vehículo guarda 1 posición cada 10 segundos durante 10 horas al día. <b>a)</b> ¿Cuántas filas de posiciones se leen en un día por todos los reportes? <b>b)</b> Si la base de datos puede leer unas 200.000 filas por segundo, ¿qué fracción del día estaría ocupada solo atendiendo reportes y qué te dice eso sobre el diseño del sistema? <b>c)</b> Indica qué simplificaciones asumiste.` }] },
+  { id:'E4', nota:'8.000 vehículos de la flota tienen sensor de combustible.',
+    preguntas:[{ pts:15, text:`El sensor reporta el nivel cada 1 minuto, las 24 horas, y cada registro pesa 64 bytes. <b>a)</b> ¿Cuántos registros se generan por día y por año? <b>b)</b> ¿Cuánto espacio ocupan por año sin compresión? <b>c)</b> Si guardas este dato en un servidor con 500 GB disponibles solo para esto, ¿en cuántos meses se llena y qué estrategia de retención propondrías? Muestra el razonamiento paso a paso.` }] }
+];
+
+/* ---------- Bloque 2 · Complejidad y optimización (20 pts) ---------- */
+const B2 = [
+  { id:'C1', nota:'Este fragmento calcula, para cada vehículo, cuántas alarmas de exceso de velocidad tuvo en el último mes.',
+    preguntas:[
+      { pts:12, code:`List<Vehiculo> vehiculos = ObtenerVehiculosActivos(); // ~55.000
+List<Alarma> alarmasProcesadas = ObtenerAlarmasDelMes(); // ~40.000
+
+foreach (var vehiculo in vehiculos)
+{
+    int contador = 0;
+    foreach (var alarma in alarmasProcesadas)
+    {
+        if (alarma.VehiculoId == vehiculo.Id && alarma.Tipo == "ExcesoVelocidad")
+        {
+            contador++;
+        }
+    }
+    vehiculo.AlarmasExceso = contador;
+}`, text:`<b>a)</b> ¿Cuál es la complejidad en notación Big-O, en función del número de vehículos (V) y alarmas (A)? <b>b)</b> Con los volúmenes reales, ¿por qué esto es un problema práctico y no solo teórico? <b>c)</b> Reescribe la solución con mejor complejidad (incluye el código).` },
+      { pts:8, text:`Tu solución usa una estructura auxiliar (diccionario, agrupación, índice). ¿Qué costo adicional introduce (memoria, tiempo de construcción) y en qué escenario de Satrack ese costo SÍ importaría lo suficiente como para reconsiderar el enfoque?` }
+    ] },
+  { id:'C2', nota:'Este fragmento busca placas duplicadas en el registro de vehículos para depuración de datos.',
+    preguntas:[
+      { pts:12, code:`public List<string> BuscarPlacasDuplicadas(List<string> placas) // ~55.000 placas
+{
+    var duplicadas = new List<string>();
+
+    for (int i = 0; i < placas.Count; i++)
+    {
+        for (int j = i + 1; j < placas.Count; j++)
+        {
+            if (placas[i] == placas[j] && !duplicadas.Contains(placas[i]))
+            {
+                duplicadas.Add(placas[i]);
+            }
+        }
+    }
+
+    return duplicadas;
+}`, text:`<b>a)</b> ¿Cuál es la complejidad en notación Big-O en función del número de placas (n)? Considera también el costo del Contains. <b>b)</b> Con 55.000 placas, ¿por qué esto es un problema práctico? <b>c)</b> Reescribe la solución con mejor complejidad (incluye el código).` },
+      { pts:8, text:`Tu solución usa una estructura auxiliar (HashSet, diccionario, agrupación). ¿Qué costo adicional introduce y en qué escenario de Satrack ese costo SÍ importaría lo suficiente como para reconsiderar el enfoque?` }
+    ] },
+  { id:'C3', nota:'Este fragmento obtiene la última posición conocida de cada vehículo a partir de las posiciones del día.',
+    preguntas:[
+      { pts:12, code:`List<Vehiculo> vehiculos = ObtenerVehiculosActivos(); // ~55.000
+List<Posicion> posiciones = ObtenerPosicionesDelDia(); // ~20.000.000
+
+foreach (var vehiculo in vehiculos)
+{
+    var ultima = posiciones
+        .Where(p => p.VehiculoId == vehiculo.Id)
+        .OrderByDescending(p => p.Fecha)
+        .First();
+
+    vehiculo.UltimaPosicion = ultima;
+}`, text:`<b>a)</b> ¿Cuál es la complejidad en notación Big-O, considerando que cada iteración filtra y además ordena? <b>b)</b> Con los volúmenes indicados, ¿por qué esto es un problema práctico? <b>c)</b> Reescribe la solución con mejor complejidad (incluye el código).` },
+      { pts:8, text:`Tu solución probablemente mantiene las ~20 millones de posiciones en memoria. ¿Qué problema introduce y en qué casos sería mejor resolver esto directamente en la base de datos en vez de en memoria? Justifica.` }
+    ] },
+  { id:'C4', nota:'Este fragmento genera un archivo CSV con el detalle de alarmas del mes para que el cliente lo descargue.',
+    preguntas:[
+      { pts:12, code:`public string GenerarCsv(IEnumerable<Alarma> alarmas) // ~100.000 alarmas
+{
+    string csv = "VehiculoId,Tipo,Fecha,Velocidad\\n";
+
+    for (int i = 0; i < alarmas.Count(); i++)
+    {
+        var a = alarmas.ElementAt(i);
+        csv += a.VehiculoId + "," + a.Tipo + "," + a.Fecha + "," + a.Velocidad + "\\n";
+    }
+
+    return csv;
+}`, text:`<b>a)</b> Identifica los problemas de rendimiento (hay más de uno; uno depende del tipo real de la colección que llegue como IEnumerable) y da la complejidad resultante. <b>b)</b> Con 100.000 alarmas, ¿por qué esto es un problema práctico? <b>c)</b> Reescribe la solución con mejor complejidad (incluye el código).` },
+      { pts:8, text:`Tu solución mantiene todo el CSV en memoria. ¿Qué pasa si el reporte pasa a 10 millones de filas? ¿Cómo cambiarías el diseño para que no crezca la memoria con el tamaño del reporte?` }
+    ] }
+];
+
+/* ---------- Bloque 3 · Estructuras de datos (15 pts) ---------- */
+const B3 = [
+  { id:'D1', nota:'Cada vehículo puede tener varias geocercas activas (zonas permitidas, restringidas, rutas). Con ~55.000 vehículos y un promedio de 4 geocercas por vehículo, el sistema recibe una posición GPS cada 5 segundos por vehículo y debe determinar en tiempo real si cae dentro o fuera de cada geocerca asignada.',
+    preguntas:[{ pts:15, text:`Comparar la posición contra cada polígono con un algoritmo punto-en-polígono clásico, uno por uno, no escala a este volumen. Propón una estructura o estrategia de indexado espacial (por ejemplo, grid de celdas, quad-tree, bounding box previo) que reduzca cuántas comparaciones se hacen por posición. Explica: <b>a)</b> cómo funcionaría a alto nivel, <b>b)</b> por qué reduce el trabajo real, y <b>c)</b> qué trade-off aceptas (memoria, complejidad de mantenimiento, latencia al actualizar geocercas).` }] },
+  { id:'D2', nota:'El front necesita responder "¿dónde está el vehículo X ahora?" en menos de 50 ms para cualquiera de los ~55.000 vehículos, mientras el sistema recibe más de 10.000 actualizaciones de posición por segundo.',
+    preguntas:[{ pts:15, text:`Leer de la base de datos histórica en cada consulta no cumple el tiempo. Propón dónde y cómo almacenarías la "última posición conocida" de cada vehículo. Explica: <b>a)</b> la estructura o tecnología elegida (diccionario en memoria, caché distribuida tipo Redis, tabla especial, etc.) y por qué, <b>b)</b> cómo evitarías que una posición vieja, llegada tarde y desordenada, sobreescriba una más reciente, <b>c)</b> cómo marcarías "sin señal" a un vehículo que no reporta hace más de 10 minutos y qué trade-off aceptas.` }] },
+  { id:'D3', nota:'Por reintentos de los dispositivos y fallas de red, el sistema recibe eventos GPS duplicados (mismo vehículo, misma marca de tiempo) y desordenados (un evento de las 10:00:05 llega después de uno de las 10:00:20). Llegan 10.000 eventos por segundo y la memoria es limitada.',
+    preguntas:[{ pts:15, text:`Diseña cómo descartarías duplicados y manejarías el desorden en una ventana de 5 minutos. Explica: <b>a)</b> qué estructura de datos usarías para detectar duplicados sin guardar todo el historial, <b>b)</b> cómo acotarías el uso de memoria con el paso del tiempo, <b>c)</b> qué haces con un evento que llega con más de 5 minutos de retraso y qué trade-off implica.` }] },
+  { id:'D4', nota:'Los asesores buscan vehículos por placa en una lista de ~55.000 placas (formato ABC123) y esperan resultados mientras escriben: con "AB" ya deben aparecer las que empiezan por "AB".',
+    preguntas:[{ pts:15, text:`Propón una estructura de datos o estrategia para responder de forma casi instantánea. Compara al menos dos alternativas (por ejemplo: lista ordenada con búsqueda binaria, trie, índice en base de datos) y explica: <b>a)</b> la complejidad de búsqueda de cada una, <b>b)</b> el costo de memoria y de mantenimiento cuando entran y salen placas, <b>c)</b> cuál elegirías y por qué.` }] }
+];
+
+/* ---------- Bloque 4 · Depuración (25 pts: se asignan 3 fragmentos) ---------- */
+const B4 = [
+  { id:'G1', titulo:'Cálculo de distancia recorrida',
+    code:`public double CalcularDistanciaRecorrida(List<EventoGPS> eventos)
+{
+    double distanciaTotal = 0;
+
+    for (int i = 1; i < eventos.Count; i++)
+    {
+        var anterior = eventos[i - 1];
+        var actual = eventos[i];
+        distanciaTotal += DistanciaHaversine(anterior.Lat, anterior.Lng, actual.Lat, actual.Lng);
+    }
+
+    return distanciaTotal;
+}`,
+    text:`Este código suma distancia incluso cuando el vehículo está parqueado (por el ruido natural del GPS, la posición "salta" unos metros aunque no se mueva). <b>a)</b> Corrige el código. <b>b)</b> ¿Qué caso límite queda sin cubrir con tu corrección? (piensa en un vehículo que se mueve muy lento en tráfico pesado).` },
+  { id:'G2', titulo:'Kilometraje mensual',
+    code:`public List<ReporteVehiculo> GenerarReporteMensual(List<int> vehiculoIds)
+{
+    var reportes = new List<ReporteVehiculo>();
+
+    foreach (var id in vehiculoIds) // ~55.000 vehículos
+    {
+        var eventos = _context.EventosGPS
+            .Where(e => e.VehiculoId == id && e.Fecha >= inicioMes)
+            .ToList();
+
+        reportes.Add(new ReporteVehiculo { VehiculoId = id, Km = CalcularDistanciaRecorrida(eventos) });
+    }
+
+    return reportes;
+}`,
+    text:`<b>a)</b> Identifica el problema de rendimiento evidente. <b>b)</b> Reescribe la solución evitándolo (código). <b>c)</b> Con ~55.000 vehículos y un mes de datos GPS por vehículo, ¿tu solución nueva podría introducir un problema distinto (de memoria, por ejemplo)? Explica cómo lo mitigarías.` },
+  { id:'G3', titulo:'Entrada a geocerca',
+    code:`public bool DetectarEntradaGeocerca(Coordenada posicionActual, Poligono geocerca, bool estabaDentroAntes)
+{
+    bool estaDentroAhora = PuntoEnPoligono(posicionActual, geocerca);
+
+    if (estaDentroAhora || estabaDentroAntes)
+    {
+        return true; // Dispara evento de "entrada a geocerca"
+    }
+
+    return false;
+}`,
+    data:[['Hora','¿Dentro del polígono?','estabaDentroAntes'],['09:00','No','false'],['09:01','No','false'],['09:02','Sí','false'],['09:03','Sí','true'],['09:04','Sí','true'],['09:05','No','true']],
+    text:`Con esta secuencia de posiciones para el mismo vehículo: <b>a)</b> ¿Cuántas veces se dispara el evento de "entrada" tal como está el código? <b>b)</b> Corrígelo para que solo dispare en la transición real de fuera a dentro.` },
+  { id:'G4', titulo:'Consumo total de combustible',
+    code:`public decimal ObtenerCombustibleTotal(List<int> vehiculoIds) // ~500 vehículos
+{
+    decimal total = 0;
+
+    foreach (var id in vehiculoIds)
+    {
+        var litros = _servicioCombustible.ObtenerLitrosAsync(id).Result;
+        total += litros;
+    }
+
+    return total;
+}`,
+    text:`<b>a)</b> Identifica los problemas (hay dos: uno de rendimiento y uno de riesgo dentro de una aplicación web). <b>b)</b> Corrígelo con código. <b>c)</b> Si lo haces concurrente con Task.WhenAll sobre los 500 vehículos, ¿qué problema nuevo puedes causar y cómo lo limitas?` },
+  { id:'G5', titulo:'Horario permitido de operación',
+    code:`public bool EsHorarioPermitido(DateTime horaEvento, TimeSpan inicio, TimeSpan fin)
+{
+    var hora = horaEvento.TimeOfDay;
+    return hora >= inicio && hora <= fin;
+}`,
+    data:[['Hora del evento','Inicio','Fin','Resultado esperado'],['23:30','22:00','06:00','Permitido'],['02:00','22:00','06:00','Permitido'],['12:00','22:00','06:00','No permitido']],
+    text:`El cliente configura un horario permitido de operación (por ejemplo, de 22:00 a 06:00). <b>a)</b> ¿Qué devuelve el código con las tres filas de la tabla y por qué? <b>b)</b> Corrígelo. <b>c)</b> Los eventos GPS llegan en UTC pero el cliente configuró el horario en hora de Colombia: ¿qué error adicional puede ocurrir y cómo lo evitas?` },
+  { id:'G6', titulo:'Velocidad promedio',
+    code:`public double VelocidadPromedio(List<EventoGPS> eventos)
+{
+    int suma = 0;
+
+    foreach (var e in eventos)
+    {
+        suma += (int)e.Velocidad;
+    }
+
+    return suma / eventos.Count;
+}`,
+    text:`<b>a)</b> Identifica todos los bugs o riesgos que encuentres (hay al menos tres). <b>b)</b> Reescribe la función corregida. <b>c)</b> ¿Incluirías en el promedio los eventos con velocidad 0? Justifica según el objetivo del reporte.` },
+  { id:'G7', titulo:'Contador de alarmas procesadas',
+    code:`private static int _alarmasProcesadas = 0;
+private static Dictionary<int, int> _alarmasPorVehiculo = new Dictionary<int, int>();
+
+// Lo invocan varios consumidores en paralelo (varios hilos)
+public void Procesar(Alarma alarma)
+{
+    _alarmasProcesadas++;
+
+    if (!_alarmasPorVehiculo.ContainsKey(alarma.VehiculoId))
+    {
+        _alarmasPorVehiculo[alarma.VehiculoId] = 0;
+    }
+
+    _alarmasPorVehiculo[alarma.VehiculoId]++;
+}`,
+    text:`En pruebas, el total de alarmas procesadas a veces no coincide con las recibidas y ocasionalmente se lanzan excepciones. <b>a)</b> Explica por qué ocurre. <b>b)</b> Corrígelo con código. <b>c)</b> Si tu solución usa un lock, ¿qué costo introduce con 10.000 mensajes por segundo y qué alternativa propondrías?` }
+];
+const B4_PTS = [9, 9, 7];
+
+/* ---------- Bloque 5 · Arquitectura a escala (15 pts) ---------- */
+const B5 = [
+  { id:'A1', nota:'Hay que sostener en producción la detección de geocercas sobre toda la flota.',
+    preguntas:[{ pts:15, text:`Con ~55.000 vehículos reportando posición cada 5 segundos, llegan más de 10.000 posiciones por segundo y cada una debe pasar por la lógica de detección de geocercas. Describe a alto nivel cómo estructurarías el procesamiento para que no sea un cuello de botella: <b>a)</b> ¿síncrono (bloquea la ingesta) o asíncrono (desacoplado)? Justifica. <b>b)</b> ¿Cómo escalarías horizontalmente si el número de vehículos se duplica el próximo año? <b>c)</b> ¿Qué pasa si el componente que detecta geocercas se cae 10 minutos? ¿Se pierden datos, se procesan tarde, o algo distinto?` }] },
+  { id:'A2', nota:'Ante un evento masivo (por ejemplo, un corte de energía en una zona), el sistema debe enviar hasta 20.000 notificaciones (SMS, correo y push) a clientes en menos de 2 minutos. El proveedor de SMS permite máximo 100 mensajes por segundo y a veces responde con errores temporales.',
+    preguntas:[{ pts:15, text:`Describe cómo estructurarías el envío: <b>a)</b> ¿Cómo desacoplarías la generación de alertas del envío? ¿Es posible cumplir los 2 minutos con el límite del proveedor? Justifica con números. <b>b)</b> ¿Cómo manejarías errores temporales y reintentos sin enviar el mismo mensaje dos veces al mismo cliente? <b>c)</b> ¿Cómo priorizarías si hay alertas críticas mezcladas con alertas informativas?` }] },
+  { id:'A3', nota:'Algunos clientes piden reportes de 12 meses que tardan ~4 minutos en generarse. Hoy la API los genera de forma síncrona: la petición queda abierta, se agotan los hilos del servidor y el resto de clientes sufre lentitud.',
+    preguntas:[{ pts:15, text:`Rediseña el flujo: <b>a)</b> ¿Cómo cambiarías el flujo para que la API responda rápido y el cliente reciba el reporte después? <b>b)</b> ¿Qué harías si el mismo cliente pide 10 veces el mismo reporte seguido (caché, deduplicación, límites)? <b>c)</b> ¿Qué pasa si el componente que genera reportes se cae a la mitad de un reporte? Justifica tu diseño.` }] },
+  { id:'A4', nota:'Hoy el servicio que procesa los eventos GPS corre en una sola instancia, lo que es un punto único de falla. Debe pasar a varias instancias en paralelo sin perder mensajes, sin procesarlos dos veces y sin perder el orden de los eventos de un mismo vehículo.',
+    preguntas:[{ pts:15, text:`Explica: <b>a)</b> ¿Cómo repartirías el trabajo entre instancias? (piensa por qué importaría particionar por VehiculoId). <b>b)</b> ¿Cómo desplegarías la nueva versión sin apagar el servicio? <b>c)</b> ¿Qué pasa si una instancia se cae procesando un lote a medias y cómo lo manejas?` }] }
+];
+
+/* ---------- Bloque 6 · IA en la resolución de problemas (10 pts: se asignan 3 preguntas) ---------- */
+const B6 = [
+  { id:'I1', text:`Si tuvieras acceso a una IA (Copilot, ChatGPT, Claude) durante esta prueba, ¿en cuál de los problemas anteriores la usarías primero y qué le pedirías exactamente? Escribe el prompt, no solo "le pediría ayuda".` },
+  { id:'I2', text:`¿Qué parte de la respuesta de una IA validarías siempre a mano antes de usarla en producción, en un problema como el de arquitectura a escala de esta prueba?` },
+  { id:'I3', text:`Cuenta un caso real de tu trabajo o estudio en el que una IA generativa te dio una solución que parecía correcta pero tuviste que corregir. ¿Qué fue lo que falló?` },
+  { id:'I4', text:`Te asignan revisar un pull request de 400 líneas que fue generado casi por completo con IA. ¿Qué revisas primero y qué haces si hay una parte que no entiendes?` },
+  { id:'I5', text:`Un compañero pega en un chat público de IA un fragmento de código con placas, cédulas de conductores y credenciales de conexión para que le ayude a depurar. ¿Qué riesgos ves y qué le recomiendas hacer en su lugar?` },
+  { id:'I6', text:`La IA te sugiere usar un paquete NuGet que no conoces para resolver un problema. ¿Cómo decides si lo usas o no?` },
+  { id:'I7', text:`Le pides a una IA que escriba pruebas unitarias para una función y todas pasan al primer intento. ¿Confías en ellas? ¿Qué verificas antes de darlas por buenas?` }
+];
+const B6_PTS = [4, 3, 3];
+
+/* =====================================================================
+   ASIGNACIÓN ALEATORIA (determinista por nombre + fecha)
+   ===================================================================== */
+function hashString(s){
+  let h = 2166136261;
+  for(let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function mulberry32(a){
+  return function(){
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function elegir(arr, rng){ return arr[Math.floor(rng()*arr.length)]; }
+function mezclar(arr, rng){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(rng()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function armarExamen(nombre, fecha){
+  const semilla = hashString(nombre.trim().toLowerCase().replace(/\s+/g,' ') + '|' + fecha);
+  const rng = mulberry32(semilla);
+
+  const bloques = [];
+
+  function bloqueDeVariante(titulo, pts, pool){
+    const v = elegir(pool, rng);
+    return {
+      titulo, pts, nota: v.nota || '',
+      items: v.preguntas.map(p => ({ variante: v.id, pts: p.pts, code: p.code, data: p.data, text: p.text }))
+    };
+  }
+
+  bloques.push(bloqueDeVariante('Estimación de escala', 15, B1));
+  bloques.push(bloqueDeVariante('Complejidad y optimización', 20, B2));
+  bloques.push(bloqueDeVariante('Diseño de estructura de datos', 15, B3));
+
+  const frags = mezclar(B4, rng).slice(0,3);
+  bloques.push({
+    titulo:'Depuración de código real', pts:25,
+    nota:'Tres fragmentos de código, cada uno con un bug distinto. Identifica el problema, corrígelo con código y señala si queda algún caso límite que tu corrección todavía no cubre.',
+    items: frags.map((f,i) => ({ variante:f.id, pts:B4_PTS[i], titulo:f.titulo, code:f.code, data:f.data, text:f.text }))
+  });
+
+  bloques.push(bloqueDeVariante('Arquitectura a escala', 15, B5));
+
+  const ias = mezclar(B6, rng).slice(0,3);
+  bloques.push({
+    titulo:'IA en la resolución de problemas', pts:10, nota:'',
+    items: ias.map((q,i) => ({ variante:q.id, pts:B6_PTS[i], text:q.text }))
+  });
+
+  return bloques;
+}
+
+/* =====================================================================
+   RENDER
+   ===================================================================== */
+let examen = [];
+let candidatoNombre = '';
+const cargoActual = '';
+let tiempoRestante = DURACION_SEGUNDOS;
+let intervaloTimer = null;
+let yaEnviado = false;
+let autoGuardadoHecho = false;
+
+function plano(html){
+  const d = document.createElement('div');
+  d.innerHTML = html;
+  return d.textContent || '';
+}
+
+function renderExamen(){
+  const root = document.getElementById('exam-root');
+  root.innerHTML = '';
+  examen.forEach((b, bi) => {
+    const bloque = document.createElement('div');
+    bloque.className = 'block';
+
+    const eyebrow = document.createElement('div');
+    eyebrow.className = 'block-eyebrow';
+    eyebrow.textContent = 'Bloque ' + (bi+1) + ' · ' + b.pts + ' pts';
+    bloque.appendChild(eyebrow);
+
+    const title = document.createElement('div');
+    title.className = 'block-title';
+    title.textContent = b.titulo;
+    bloque.appendChild(title);
+
+    if(b.nota){
+      const note = document.createElement('div');
+      note.className = 'block-note';
+      note.textContent = b.nota;
+      bloque.appendChild(note);
+    }
+
+    b.items.forEach((it, qi) => {
+      it.num = (bi+1) + '.' + (qi+1);
+      const q = document.createElement('div');
+      q.className = 'question';
+
+      const label = document.createElement('div');
+      label.className = 'q-label';
+      const l1 = document.createElement('span'); l1.textContent = 'Pregunta ' + it.num;
+      const l2 = document.createElement('span'); l2.textContent = it.pts + ' pts';
+      label.appendChild(l1); label.appendChild(l2);
+      q.appendChild(label);
+
+      if(it.titulo){
+        const t = document.createElement('div');
+        t.className = 'q-title';
+        t.textContent = it.titulo;
+        q.appendChild(t);
+      }
+      if(it.code){
+        const pre = document.createElement('pre');
+        pre.className = 'code-block';
+        pre.textContent = it.code;
+        q.appendChild(pre);
+      }
+      if(it.data){
+        const table = document.createElement('table');
+        table.className = 'data-table';
+        it.data.forEach((fila, ri) => {
+          const tr = document.createElement('tr');
+          fila.forEach(c => {
+            const cell = document.createElement(ri === 0 ? 'th' : 'td');
+            cell.textContent = c;
+            tr.appendChild(cell);
+          });
+          table.appendChild(tr);
+        });
+        q.appendChild(table);
+      }
+      const txt = document.createElement('div');
+      txt.className = 'q-text';
+      txt.innerHTML = it.text;
+      q.appendChild(txt);
+
+      const ta = document.createElement('textarea');
+      ta.className = 'answer';
+      ta.placeholder = 'Escribe tu respuesta aquí...';
+      ta.setAttribute('data-num', it.num);
+      it.textarea = ta;
+      q.appendChild(ta);
+
+      bloque.appendChild(q);
+    });
+
+    root.appendChild(bloque);
+  });
+}
+
+/* =====================================================================
+   FLUJO
+   ===================================================================== */
+function hoyISO(){
+  const d = new Date();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  return d.getFullYear() + '-' + m + '-' + dd;
+}
+
+function iniciarPrueba(){
+  const nombre = document.getElementById('meta-candidato').value.trim();
+  const errorEl = document.getElementById('start-error');
+  if(nombre.length < 3){
+    errorEl.textContent = 'Escribe tu nombre completo antes de iniciar.';
+    return;
+  }
+  candidatoNombre = nombre;
+  const fecha = document.getElementById('meta-fecha').value;
+
+  examen = armarExamen(nombre, fecha);
+  renderExamen();
+
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('test-screen').style.display = 'block';
+  document.getElementById('save-bar').style.display = 'flex';
+  document.getElementById('timer-candidato').textContent = nombre + (cargoActual ? ' · ' + cargoActual : '');
+  window.scrollTo(0,0);
+  iniciarTimer();
+}
+
+function iniciarTimer(){
+  actualizarReloj();
+  intervaloTimer = setInterval(() => {
+    tiempoRestante--;
+    actualizarReloj();
+    if(tiempoRestante <= 0){
+      clearInterval(intervaloTimer);
+      if(!autoGuardadoHecho){
+        autoGuardadoHecho = true;
+        alert('Se acabó el tiempo. Tus respuestas se van a guardar ahora.');
+        guardarRespuestas(true);
+      }
+    }
+  }, 1000);
+}
+function actualizarReloj(){
+  const t = Math.max(tiempoRestante, 0);
+  const m = Math.floor(t/60);
+  const s = t % 60;
+  const el = document.getElementById('timer-clock');
+  el.textContent = m + ':' + String(s).padStart(2,'0');
+  el.classList.toggle('low', tiempoRestante < 300);
+}
+
+/* =====================================================================
+   GUARDADO
+   ===================================================================== */
+function enunciadoCompleto(it){
+  let t = (it.titulo ? it.titulo + '\n' : '') + plano(it.text);
+  if(it.code) t += '\n\nCÓDIGO:\n' + it.code;
+  if(it.data) t += '\n\nDATOS:\n' + it.data.map(f => f.join(' | ')).join('\n');
+  return t;
+}
+
+function recolectarFilas(){
+  const tiempoUsadoMin = Math.round((DURACION_SEGUNDOS - Math.max(tiempoRestante,0))/60);
+  const candidato = candidatoNombre + (cargoActual ? ' (' + cargoActual + ')' : '');
+  const filas = [];
+  examen.forEach(b => {
+    b.items.forEach(it => {
+      filas.push({
+        candidato: candidato,
+        fecha_envio: new Date().toISOString(),
+        bloque: b.titulo,
+        pregunta: '[' + it.variante + '] ' + it.num + ' — ' + enunciadoCompleto(it),
+        puntos_max: it.pts,
+        respuesta: it.textarea.value,
+        tiempo_usado_min: tiempoUsadoMin
+      });
+    });
+  });
+  return filas;
+}
+
+function descargarTxt(filas){
+  let texto = 'PRUEBA TÉCNICA — DESARROLLADOR 1\nCandidato: ' + candidatoNombre + (cargoActual ? ' (' + cargoActual + ')' : '') + '\nFecha: ' + document.getElementById('meta-fecha').value + '\n';
+  filas.forEach(f => {
+    texto += '\n' + '='.repeat(60) + '\n[' + f.bloque + ' · ' + f.puntos_max + ' pts]\n' + f.pregunta + '\n\nRESPUESTA:\n' + (f.respuesta || '(sin respuesta)') + '\n';
+  });
+  const blob = new Blob([texto], { type:'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'respuestas_' + candidatoNombre.replace(/\s+/g,'_') + '.txt';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function guardarRespuestas(automatico){
+  const statusEl = document.getElementById('save-status');
+  if(yaEnviado && !automatico){
+    const seguir = confirm('Ya enviaste tus respuestas. Si las envías de nuevo se duplicarán las filas en el Sheet. ¿Enviar de todas formas?');
+    if(!seguir) return;
+  }
+  const filas = recolectarFilas();
+  descargarTxt(filas);
+
+  statusEl.textContent = 'Enviando a Google Sheets...';
+  try{
+    await fetch(SHEET_SCRIPT_URL, {
+      method:'POST',
+      mode:'no-cors',
+      headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+      body: JSON.stringify({ rows: filas })
+    });
+    yaEnviado = true;
+    statusEl.textContent = 'Respuestas enviadas y respaldo .txt descargado.';
+  }catch(e){
+    statusEl.textContent = 'Respaldo .txt descargado. No se pudo enviar al Sheet: revisa la conexión y vuelve a intentar.';
+  }
+}
+
+/* =====================================================================
+   INIT
+   ===================================================================== */
+document.getElementById('meta-fecha').value = hoyISO();
+document.getElementById('btn-start').addEventListener('click', iniciarPrueba);
+document.getElementById('btn-save').addEventListener('click', () => guardarRespuestas(false));
+</script>
+</body>
+</html>
